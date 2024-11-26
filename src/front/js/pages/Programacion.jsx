@@ -1,8 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/programacion.css";
 
 export const Programacion = () => {
     const [mesActual, setMesActual] = useState(new Date()); // Mes mostrado actualmente
+    const host = process.env.BACKEND_URL;
+
+    // Fetch de programaciones al montar el componente
+    useEffect(() => {
+        const fetchProgramaciones = async () => {
+            try {
+                const response = await fetch(`${host}/api/programacion`, { method: "GET" }); // Llamada al endpoint
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                const data = await response.json(); // Convertir la respuesta en JSON
+                console.log(data); // Mostrar los resultados en consola
+            } catch (error) {
+                console.error("Error al obtener las programaciones:", error);
+            }
+        };
+
+        fetchProgramaciones();
+    }, []); // El array vacío asegura que solo se ejecute al montar el componente
 
     // Función para obtener los días de un mes
     const obtenerDiasDelMes = (fecha) => {
