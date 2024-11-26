@@ -543,16 +543,9 @@ def manage_inventario(inventario_id):
         db.session.commit()
         return jsonify({"msg": "Inventario deleted."}), 200
 
-#PROGRAMACION
+# Rutas para Programacion
 @api.route('/programacion', methods=['GET', 'POST'])
-#@jwt_required()
 def programacion():
-    # Verifica que el usuario sea administrador
-    #current_user = get_jwt_identity()
-    #user = Socio.query.filter_by(email=current_user).first()
-    #if not user:
-     #   return jsonify({"msg": "Unauthorized. Admins only."}), 403
-
     if request.method == "GET":
         programaciones = Programacion.query.all()
         results = [programacion.serialize() for programacion in programaciones]
@@ -570,48 +563,50 @@ def programacion():
             fecha=request_body['fecha'],
             hora=request_body['hora'],
             lugar=request_body['lugar'],
-            participantes=request_body['participantes'],
-            realizado=request_body['realizado']
-            
+            participantes=request_body.get('participantes', {"results": []}),
+            realizado=request_body.get('realizado', False)
         )
         db.session.add(programacion)
         db.session.commit()
-        return jsonify(programacion.serialize()), 200
+        return jsonify(programacion.serialize()), 201
 
     else:
-        return jsonify({"msg": "Error. Method not allowed."}), 405
+        response_body = {"message": "Error. Method not allowed."}
+        return response_body, 405
 
 
-@api.route('/programacion/<int:programacion_id>', methods=['GET', 'PUT', 'DELETE'])
-# @jwt_required()
-def manage_programacion(programacion_id):
-    # Verifica que el usuario sea administrador
-    # current_user = get_jwt_identity()
-    # if not user:
-    #     return jsonify({"msg": "Unauthorized. Admins only."}), 403
-
+@api.route('/programacion/<int:programacion_id>', methods=['GET'])
+def get_programacion_by_id(programacion_id):
     programacion = Programacion.query.get(programacion_id)
     if not programacion:
-        return jsonify({"msg": "Programacion not found."}), 404
+        return jsonify({"message": "Programación not found"}), 404
+    return jsonify(programacion.serialize()), 200
 
-    # Método GET para obtener un elemento del inventario
-    if request.method == "GET":
-        return jsonify(Programacion.serialize()), 200
 
-    # Método PUT para actualizar un elemento del inventario
-    elif request.method == "PUT":
-        request_body = request.get_json()
-        programacion.nombre = request_body.get('nombre', programacion.nombre)
-        programacion.fecha = request_body.get('fecha', programacion.fecha)
-        programacion.hora = request_body.get('hora', programacion.hora)
-        programacion.lugar = request_body.get('lugar', programacion.lugar)
-        programacion.participantes = request_body.get('participantes', programacion.participantes)
-        programacion.realizado = request_body.get('realizado', programacion.realizado)
-        db.session.commit()
-        return jsonify(programacion.serialize()), 200
+@api.route('/programacion/<int:programacion_id>', methods=['DELETE'])
+def delete_programacion(programacion_id):
+    programacion = Programacion.query.get(programacion_id)
+    if not programacion:
+        return jsonify({"message": "Programación not found"}), 404
 
-    # Método DELETE para eliminar un elemento del inventario
-    elif request.method == "DELETE":
-        db.session.delete(programacion)
-        db.session.commit()
-        return jsonify({"msg": "Programacion deleted."}), 200
+    db.session.delete(programacion)
+    db.session.commit()
+    return jsonify({"message": "Programación deleted successfully"}), 200
+
+
+@api.route('/programacion/<int:programacion_id>', methods=['PUT'])
+def update_programacion(programacion_id):
+    programacion = Programacion.query.get(programacion_id)
+    if not programacion:
+        return jsonify({"message": "Programación not found"}), 404
+
+    request_body = request.get_json()
+    programacion.nombre = request_body.get('nombre', programacion.nombre)
+    programacion.fecha = request_body.get('fecha', programacion.fecha)
+    programacion.hora = request_body.get('hora', programacion.hora)
+    programacion.lugar = request_body.get('lugar', programacion.lugar)
+    programacion.participantes = request_body.get('participantes', programacion.participantes)
+    programacion.realizado = request_body.get('realizado', programacion.realizado)
+
+    db.session.commit()
+    return jsonify(programacion.serialize()), 200

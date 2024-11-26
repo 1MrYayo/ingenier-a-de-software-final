@@ -10,12 +10,10 @@ export const EditarProgramacion = () => {
     const [realizado, setRealizado] = useState(false);
     const [participantes, setParticipantes] = useState([]);
     const navigate = useNavigate();
-    
-    const host = process.env.BACKEND_URL;
 
+    const host = process.env.BACKEND_URL;
     const edit_id = localStorage.getItem("id_programacion");
 
-    // Función para obtener los datos de la programación
     const get_programacion = () => {
         fetch(`${host}/api/programacion/${edit_id}`)
             .then(response => {
@@ -28,7 +26,7 @@ export const EditarProgramacion = () => {
                 setHora(result.hora);
                 setLugar(result.lugar);
                 setRealizado(result.realizado);
-                setParticipantes(result.participantes.results);  // Asumimos que los participantes vienen en una lista
+                setParticipantes(result.participantes.results); // Convertimos el array results para edición
             })
             .catch(error => console.error(error));
     };
@@ -37,7 +35,6 @@ export const EditarProgramacion = () => {
         get_programacion();
     }, []);
 
-    // Función para manejar la actualización de la programación
     const handleClick = (e) => {
         e.preventDefault();
 
@@ -50,7 +47,7 @@ export const EditarProgramacion = () => {
             hora,
             lugar,
             realizado,
-            participantes,  // Aquí puedes manejar los participantes si es necesario
+            participantes: { results: participantes.map(id => parseInt(id, 10)) }, // Formato requerido
         });
 
         const requestOptions = {
@@ -63,7 +60,7 @@ export const EditarProgramacion = () => {
             .then(response => {
                 if (response.status === 200) {
                     alert("Cambios guardados exitosamente");
-                    navigate("/listadoprogramacion"); // Redireccionar al usuario
+                    navigate("/listadoprogramacion");
                 } else {
                     alert("Ocurrió un error al actualizar la programación");
                 }
@@ -142,9 +139,11 @@ export const EditarProgramacion = () => {
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Participantes (IDs)"
+                                placeholder="Participantes (IDs separados por coma)"
                                 value={participantes.join(", ")}
-                                onChange={(e) => setParticipantes(e.target.value.split(",").map(id => id.trim()))}
+                                onChange={(e) =>
+                                    setParticipantes(e.target.value.split(",").map(id => id.trim()))
+                                }
                             />
                         </div>
                         <button className="btn btn-primary w-100" type="submit">
