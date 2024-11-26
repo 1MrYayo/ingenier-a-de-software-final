@@ -58,7 +58,7 @@ export const EditarProgramacion = () => {
 
         fetch(`${host}/api/programacion/${edit_id}`, requestOptions)
             .then(response => {
-                if (response.status === 200) {
+                if (response.status === 200 || response.status === 201) {
                     alert("Cambios guardados exitosamente");
                     navigate("/listadoprogramacion");
                 } else {
