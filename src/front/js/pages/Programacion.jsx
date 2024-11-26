@@ -1,30 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../../styles/programacion.css";
 
 export const Programacion = () => {
-    const [programaciones, setProgramaciones] = useState([]);
     const [mesActual, setMesActual] = useState(new Date()); // Mes mostrado actualmente
-
-    // Función para obtener programaciones desde la API
-    const obtenerProgramaciones = async () => {
-        const response = await fetch("/api/programacion");
-        if (response.ok) {
-            const data = await response.json();
-            console.log("Datos recibidos de la API:", data.results); // DEBUG
-            setProgramaciones(
-                data.results.map((prog) => ({
-                    ...prog,
-                    fecha: new Date(prog.fecha), // Convertir fecha a objeto Date
-                }))
-            );
-        } else {
-            console.error("Error al obtener programaciones:", response.status);
-        }
-    };
-
-    useEffect(() => {
-        obtenerProgramaciones();
-    }, []);
 
     // Función para obtener los días de un mes
     const obtenerDiasDelMes = (fecha) => {
@@ -53,6 +31,15 @@ export const Programacion = () => {
         setMesActual((prev) => new Date(prev.getFullYear(), prev.getMonth() + direccion, 1));
     };
 
+    // Formatear fecha para tener siempre 2 dígitos (mm y dd)
+    const formatearFecha = (fecha) => {
+        const dia = fecha.getDate().toString().padStart(2, "0");
+        const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+        const anio = fecha.getFullYear();
+
+        return `${dia}-${mes}-${anio}`;
+    };
+
     // Renderizar días del mes actual
     const renderDias = () => {
         const dias = obtenerDiasDelMes(mesActual);
@@ -62,28 +49,15 @@ export const Programacion = () => {
                 return <td key={index} className="col-2 border border-dark"></td>;
             }
 
-            const programacionesDia = programaciones.filter((prog) => {
-                const fechaProg = prog.fecha;
-
-                // Comparación explícita de fechas (año, mes, día)
-                const esMismoDia =
-                    dia.getFullYear() === fechaProg.getFullYear() &&
-                    dia.getMonth() === fechaProg.getMonth() &&
-                    dia.getDate() === fechaProg.getDate();
-
-                return esMismoDia;
-            });
-
-            console.log(`Día ${dia.toDateString()}:`, programacionesDia); // DEBUG
+            const fechaFormateada = formatearFecha(dia); // Formato dd-mm-aaaa
 
             return (
-                <td key={index} className="col-2 border border-dark">
+                <td
+                    key={index}
+                    className="col-2 border border-dark"
+                    id={fechaFormateada} // Asignar el id con la fecha formateada
+                >
                     <div>{dia.getDate()}</div>
-                    {programacionesDia.map((prog) => (
-                        <div key={prog.id} className="programacion-item mt-2">
-                            <strong>{prog.nombre}</strong>
-                        </div>
-                    ))}
                 </td>
             );
         });
