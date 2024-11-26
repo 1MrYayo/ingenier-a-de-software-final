@@ -15,7 +15,7 @@ export const Login = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      // Enviar la solicitud al backend
+      // Enviar la solicitud de login al backend
       const response = await fetch(`${host}/api/login`, {
         method: 'POST',
         headers: {
@@ -29,9 +29,30 @@ export const Login = () => {
       if (response.ok) {
         // Almacenar el token en el almacenamiento local
         localStorage.setItem('token', data.access_token);
-        navigate("/programacion");
-        // Recargar la página para actualizar el navbar
-        window.location.reload();  // Esta línea fuerza el refresco de la página
+
+        // Hacer un GET a /api/socio para obtener los datos del socio
+        const socioResponse = await fetch(`${host}/api/socio`, {
+          headers: {
+            'Authorization': `Bearer ${data.access_token}`, // Autenticación con el token
+          },
+        });
+
+        const sociosData = await socioResponse.json();
+
+        // Buscar el socio correspondiente comparando el email
+        const socio = sociosData.results.find((socio) => socio.email === email);
+
+        if (socio) {
+          // Guardar el UserId en localStorage
+          localStorage.setItem('UserId', socio.id);
+
+          navigate("/programacion");
+
+          // Recargar la página para actualizar el navbar
+          window.location.reload();  // Esta línea fuerza el refresco de la página
+        } else {
+          setError("No se encontró un socio con ese correo electrónico.");
+        }
       } else {
         setError(data.msg || "Correo electrónico o contraseña incorrectos");
       }

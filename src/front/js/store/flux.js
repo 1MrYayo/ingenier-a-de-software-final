@@ -1,103 +1,3 @@
-/* const getState = ({ getStore, getActions, setStore }) => {
-	return {
-		store: {
-			token : null,
-			},
-		actions: {
-			// Use getActions to call a function within a fuction
-			synctoken : () =>{
-				const token = localStorage.getItem("token");
-				console.log("App just loaded, synching the local storage");
-				if (token && token != "" && token != undefined) setStore({token: token}); 
-			},  
-
-		login: async (email, password) => {
-			    
-					const requestOptions = {
-						method : "POST",
-						headers : {
-							"Content-type": "application/json"
-						},
-						body : JSON.stringify({
-							email : email,
-							password : password
-						})
-					};
-			try {
-						const resp = await fetch("JPABLO api/login", requestOptions)
-						if (resp.status != 200){
-							alert("An error has occurred");
-							return false;
-						} 
-						const data = await resp.json();                     
-						localStorage.setItem("token", data.access_token);
-						setStore({token: data.access_token})
-
-						return true;
-					}
-					catch(error){
-						console.error("There has been an error login in")
-					}
-			},
-
-			register: async (email, password)=>{
-				const requestOptions = {
-					method : "POST",
-					headers : {
-						"Content-type": "application/json"
-					},
-					body : JSON.stringify({
-						email : email,
-						password : password
-					})
-				};
-				try {
-					const resp = await fetch("jose pablo", requestOptions)
-					if (resp.status != 200){
-						alert("An error has occurred while creating the user");
-						return false;
-					} 
-					const data = await resp.json(); 
-					console.log(data);                  
-
-					return true;
-				}
-				catch(error){
-					console.error("There has been an error creating a user")
-				}
-			},
-		    
-			getUserData:
-				async () => {
-					const store = getStore();
-					const requestOptions = {
-					  method: "GET",
-					  headers: {
-						Authorization: `Bearer ${store.token}`,
-					  },
-					};
-					try {
-					  const res = await fetch("JOSE PABLO", requestOptions);
-					  const data = await res.json();
-					  return data;
-					} catch (error) {
-					  console.log(error);
-					}
-			},
-
-			logout: ()=>{
-				const token = localStorage.removeItem("token");
-				setStore({token:null}); 
-			},
-
-		}
-	};
-};
-
-export default getState;
-
- */
-
 
 const getState = ({
     getStore,
@@ -122,9 +22,7 @@ const getState = ({
             user: [],
             participante: [],
             isAdmin: false, // crear logica
-            enrolled: [],
             monitores: [],
-            administradores: [],
             tipo_evento: [],
             evento: [],
         },
@@ -248,24 +146,7 @@ const getState = ({
                     demo: demo
                 });
             },
-            getEnrolled: async () => {
-                const store = getStore();
-                const host = process.env.BACKEND_URL;
-                const url = host + "/api/register-participante";
-                const requestOptions = {
-                    method: "GET",
-                    ContentType: "application/json",
-                }
-                const response = await fetch(url, requestOptions);
-                console.log(response)
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(" Data User: ", data.results);
-                    setStore({
-                        enrolled: data.results,
-                    });
-                }
-            },
+            
 
             getSocios: async () => {
                 const store = getStore();
@@ -285,78 +166,10 @@ const getState = ({
                     });
                 }
             },
-            getMonitores: async () => {
-                const store = getStore();
-                const host = process.env.BACKEND_URL;
-                const url = host + "/api/socio";
-                const requestOptions = {
-                    method: "GET",
-                    ContentType: "application/json",
-                }
-                const response = await fetch(url, requestOptions);
-                console.log(response)
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(" Data Monitores: ", data.results);
-                    setStore({
-                        monitores: data.results,
-                    });
-                }
-            },
-            getAdministradores: async () => {
-                const store = getStore();
-                const host = process.env.BACKEND_URL;
-                const url = host + "/api/register-administrador";
-                const requestOptions = {
-                    method: "GET",
-                    ContentType: "application/json",
-                }
-                const response = await fetch(url, requestOptions);
-                console.log(response)
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(" Data Administrador: ", data.results);
-                    setStore({
-                        administradores: data.results,
-                    });
-                }
-            },
-            getTipo_de_Eventos: async () => {
-                const store = getStore();
-                const host = process.env.BACKEND_URL;
-                const url = host + "/api/tipo-de-evento";
-                const requestOptions = {
-                    method: "GET",
-                    ContentType: "application/json",
-                }
-                const response = await fetch(url, requestOptions);
-                console.log(response)
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(" Data Administrador: ", data.results);
-                    setStore({
-                        tipo_evento: data.results,
-                    });
-                }
-            },
-            getEvento: async () => {
-                const store = getStore();
-                const host = process.env.BACKEND_URL;
-                const url = host + "/api/evento";
-                const requestOptions = {
-                    method: "GET",
-                    ContentType: "application/json",
-                }
-                const response = await fetch(url, requestOptions);
-                console.log(response)
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(" Data Administrador: ", data.results);
-                    setStore({
-                        evento: data.results,
-                    });
-                }
-            },
+            
+            
+            
+            
         }
     };
 };
