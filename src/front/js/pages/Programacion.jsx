@@ -1,187 +1,149 @@
-import React, { useState, useContext } from "react";
-import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
-import "../../styles/login.css"
-import "../../styles/programacion.css"
-import logoClubTenisVdM from "../../img/logo.png";
-import claseTenis from "../../img/clasetenis.jpg";
-import torneoTenis from "../../img/torneotenis.jpg";
-
+import React, { useState, useEffect } from "react";
+import "../../styles/programacion.css";
 
 export const Programacion = () => {
-    const [isEnrolled, setIsEnrolled] = useState(false);
-    
+    const [programaciones, setProgramaciones] = useState([]);
+    const [mesActual, setMesActual] = useState(new Date()); // Mes mostrado actualmente
 
-    const handleEnrollClick = () => {
-        setIsEnrolled(!isEnrolled);
+    // Función para obtener programaciones desde la API
+    const obtenerProgramaciones = async () => {
+        const response = await fetch("/api/programacion");
+        if (response.ok) {
+            const data = await response.json();
+            console.log("Datos recibidos de la API:", data.results); // DEBUG
+            setProgramaciones(
+                data.results.map((prog) => ({
+                    ...prog,
+                    fecha: new Date(prog.fecha), // Convertir fecha a objeto Date
+                }))
+            );
+        } else {
+            console.error("Error al obtener programaciones:", response.status);
+        }
     };
-    
 
-    
-  
+    useEffect(() => {
+        obtenerProgramaciones();
+    }, []);
+
+    // Función para obtener los días de un mes
+    const obtenerDiasDelMes = (fecha) => {
+        const anio = fecha.getFullYear();
+        const mes = fecha.getMonth();
+
+        const primerDia = new Date(anio, mes, 1);
+        const diaSemanaInicio = primerDia.getDay(); // Día de la semana del primer día
+        const ultimoDia = new Date(anio, mes + 1, 0);
+
+        const dias = [];
+        // Agregar días vacíos al inicio
+        for (let i = 0; i < (diaSemanaInicio === 0 ? 6 : diaSemanaInicio - 1); i++) {
+            dias.push(null);
+        }
+        // Agregar días del mes
+        for (let i = 1; i <= ultimoDia.getDate(); i++) {
+            const diaActual = new Date(anio, mes, i);
+            dias.push(diaActual);
+        }
+        return dias;
+    };
+
+    // Cambiar de mes
+    const cambiarMes = (direccion) => {
+        setMesActual((prev) => new Date(prev.getFullYear(), prev.getMonth() + direccion, 1));
+    };
+
+    // Renderizar días del mes actual
+    const renderDias = () => {
+        const dias = obtenerDiasDelMes(mesActual);
+
+        return dias.map((dia, index) => {
+            if (dia === null) {
+                return <td key={index} className="col-2 border border-dark"></td>;
+            }
+
+            const programacionesDia = programaciones.filter((prog) => {
+                const fechaProg = prog.fecha;
+
+                // Comparación explícita de fechas (año, mes, día)
+                const esMismoDia =
+                    dia.getFullYear() === fechaProg.getFullYear() &&
+                    dia.getMonth() === fechaProg.getMonth() &&
+                    dia.getDate() === fechaProg.getDate();
+
+                return esMismoDia;
+            });
+
+            console.log(`Día ${dia.toDateString()}:`, programacionesDia); // DEBUG
+
+            return (
+                <td key={index} className="col-2 border border-dark">
+                    <div>{dia.getDate()}</div>
+                    {programacionesDia.map((prog) => (
+                        <div key={prog.id} className="programacion-item mt-2">
+                            <strong>{prog.nombre}</strong>
+                        </div>
+                    ))}
+                </td>
+            );
+        });
+    };
+
+    // Generar semanas del mes actual
+    const renderSemanas = () => {
+        const dias = renderDias();
+        const semanas = [];
+
+        for (let i = 0; i < dias.length; i += 7) {
+            semanas.push(
+                <tr key={i} className="border border-dark">
+                    {dias.slice(i, i + 7)}
+                </tr>
+            );
+        }
+
+        return semanas;
+    };
+
     return (
-      <div className="container">
-        
-        <table class="table table-bordered border-dark programacion">
-<thead>
-<tr><th colspan="12" class="text-center border border-dark">Octubre 2024</th></tr>
-</thead>
-<thead>
-<tr><th class="text-center col-2 border border-dark">Lunes</th><th class="text-center col-2 border border-dark">Martes</th><th class="text-center col-2 border border-dark">Miércoles</th><th class="text-center col-2 border border-dark">Jueves</th><th class="text-center col-2 border border-dark">Viernes</th><th class="text-center col-1 border border-dark">Sábado</th><th class="text-center col-1 border border-dark">Domingo</th></tr>
-</thead>
-<tbody>
-<tr class="bg-primary text-light border border-dark">
-<td class="bg-secondary text-center col-2 border border-dark"></td>
-<td class="bg-primary text-center col-2 border border-dark">1</td>
-<td class="bg-primary text-center col-2 border border-dark">2</td>
-<td class="bg-primary text-center col-2 border border-dark">3</td>
-<td class="bg-primary text-center col-2 border border-dark">4</td>
-<td class="bg-primary text-center col-2 border border-dark">5</td>
-<td class="text-center col-1 border border-dark">6</td>
-</tr>
-<tr>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark">
-<p></p>
-</td>
-<td class="col-2 border border-dark"></td>
-<td class="col-1 border border-dark"></td>
-</tr>
-<tr class="bg-primary text-light">
-<td class="text-center border border-dark">7</td>
-<td class="text-center border border-dark">8</td>
-<td class="text-center border border-dark">9</td>
-<td class="text-center border border-dark">10</td>
-<td class="text-center border border-dark">11</td>
-<td class="text-center border border-dark">12</td>
-<td class="text-center border border-dark">13</td>
-</tr>
-<tr class="border border-dark">
-<td class="col-2 border border-dark">
-<p></p>
-</td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-1 border border-dark"></td>
-</tr>
-<tr class="bg-primary text-light">
-<td class="text-center border border-dark">14</td>
-<td class="text-center border border-dark">15</td>
-<td class="text-center border border-dark">16</td>
-<td class="text-center border border-dark">17</td>
-<td class="text-center border border-dark">18</td>
-<td class="text-center border border-dark">19</td>
-<td class="text-center border border-dark">20</td>
-</tr>
-<tr>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark">
-<div className="card">
-    <div className="card-body">
-    <h5 class="card-title">Clase de Tenis</h5>
-    <img src={claseTenis} width={100} height={100} className="rounded"/>
-    <p class="card-text">10:00 - 12:00</p>
-    <a
-                                        
-                                        className="btn btn-primary"
-                                        onClick={handleEnrollClick}
-                                    >
-                                        {isEnrolled ? "Desinscribir" : "Inscribir"}
-                                    </a>
-
-    </div>
-
-</div>
-</td>
-<td class="col-2 border border-dark">
-    
-</td>
-<td class="col-2 border border-dark">
-<p></p>
-</td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark">
-<div className="card">
-    <div className="card-body">
-    <h5 class="card-title">Torneo de Tenis</h5>
-    <img src={torneoTenis} width={100} height={100} className="rounded"/>
-    <p class="card-text">10:00 - 16:00</p>
-    <a
-                                        
-                                        className="btn btn-primary"
-                                        
-                                    >
-                                         Inscribirme
-                                    </a>
-
-    </div>
-
-</div>
-</td>
-<td class="col-1 border border-dark"></td>
-</tr>
-<tr class="bg-primary text-light">
-<td class="text-center border border-dark">21</td>
-<td class="text-center border border-dark">22</td>
-<td class="text-center border border-dark">23</td>
-<td class="text-center border border-dark">24</td>
-<td class="text-center border border-dark">25</td>
-<td class="text-center border border-dark">26</td>
-<td class="text-center border border-dark">27</td>
-</tr>
-<tr>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"><div className="card">
-    <div className="card-body">
-    <h5 class="card-title">Clase de Tenis</h5>
-    <img src={claseTenis} width={100} height={100} className="rounded"/>
-    <p class="card-text">10:00 - 12:00</p>
-    <a
-                                        
-                                        className="btn btn-primary"
-                                        
-                                    >
-                                         Inscribirme
-                                    </a>
-
-    </div>
-
-</div></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark">
-<p></p>
-</td>
-<td class="col-2 border border-dark"></td>
-<td class="col-1 border border-dark"></td>
-</tr>
-<tr class="bg-primary text-light">
-<td class="text-center border border-dark">28</td>
-<td class="text-center border border-dark">29</td>
-<td class="text-center border border-dark">30</td>
-<td class="text-center border border-dark">31</td>
-<td class="text-center border border-dark"></td>
-<td class="text-center border border-dark"></td>
-<td class="text-center border border-dark"></td>
-</tr>
-<tr>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-2 border border-dark text-danger"></td>
-<td class="col-2 border border-dark"></td>
-<td class="col-1 border border-dark"></td>
-</tr>
-</tbody>
-</table>
-      </div>
+        <div className="container programacion">
+            <div className="d-flex justify-content-between align-items-center my-3">
+                <button
+                    className="btn btn-secondary"
+                    onClick={() => cambiarMes(-1)}
+                    disabled={
+                        mesActual <= new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)
+                    }
+                >
+                    Mes Anterior
+                </button>
+                <h3 className="text-center border border-dark bg-secondary text-light py-2">
+                    {mesActual.toLocaleString("es-ES", { month: "long", year: "numeric" }).toUpperCase()}
+                </h3>
+                <button
+                    className="btn btn-secondary"
+                    onClick={() => cambiarMes(1)}
+                    disabled={
+                        mesActual >= new Date(new Date().getFullYear(), new Date().getMonth() + 2, 1)
+                    }
+                >
+                    Mes Siguiente
+                </button>
+            </div>
+            <table className="table table-bordered border-dark programacion">
+                <thead>
+                    <tr>
+                        <th className="text-center col-2">Lunes</th>
+                        <th className="text-center col-2">Martes</th>
+                        <th className="text-center col-2">Miércoles</th>
+                        <th className="text-center col-2">Jueves</th>
+                        <th className="text-center col-2">Viernes</th>
+                        <th className="text-center col-1">Sábado</th>
+                        <th className="text-center col-1">Domingo</th>
+                    </tr>
+                </thead>
+                <tbody>{renderSemanas()}</tbody>
+            </table>
+        </div>
     );
-  };
-  
+};

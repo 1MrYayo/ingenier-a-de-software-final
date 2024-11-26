@@ -20,7 +20,7 @@ export const Navbar = () => {
         return <Navbar_Admin />;
     } else {
         return (
-            <nav className="navbar rg-header fixed-top">
+            <nav className="navbar rg-header">
                 <div className="container-fluid d-flex justify-content-between ">
                     <div className="conteiner-logo">
                         <div className="navbar-brand">
@@ -33,6 +33,9 @@ export const Navbar = () => {
                         <ul className="nav me-auto mb-2 mb-lg-0">
                             {store.token && (
                                 <>
+                                    <li className="nav-item">
+                                        <Link className="nav-link rg-textlink link-secondary" to="/listadoprogramacion">Listado Programación</Link>
+                                    </li>
                                     <li className="nav-item">
                                         <Link className="nav-link rg-textlink link-secondary" to="/listadosocios">Socios</Link>
                                     </li>

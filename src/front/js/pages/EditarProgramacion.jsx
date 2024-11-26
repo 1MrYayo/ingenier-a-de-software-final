@@ -93,7 +93,7 @@ export const EditarProgramacion = () => {
                         <div className="mb-3">
                             <label className="form-label">Fecha</label>
                             <input
-                                type="datetime-local"
+                                type="text"
                                 className="form-control"
                                 value={fecha}
                                 onChange={(e) => setFecha(e.target.value)}

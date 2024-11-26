@@ -128,7 +128,7 @@ class Programacion(db.Model):
     __tablename__ = 'programacion'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(999), unique=False, nullable=False)
-    fecha = db.Column(db.Date, nullable=False)  # Campo de fecha
+    fecha = db.Column(db.String(20), nullable=False)  # Campo de fecha
     hora = db.Column(db.String(120), unique=False, nullable=False)
     lugar = db.Column(db.String(120), unique=False, nullable=False)
     participantes = db.Column(JSON, nullable=False, default={"results": []})  # Lista de IDs de participantes

@@ -70,8 +70,9 @@ export const CrearProgramacion = () => {
                         <div className="mb-3">
                             <label className="form-label">Fecha</label>
                             <input
-                                type="date"
+                                type="text"
                                 className="form-control"
+                                placeholder="dd-mm-aaaa"
                                 value={fecha}
                                 onChange={(e) => setFecha(e.target.value)}
                                 required
