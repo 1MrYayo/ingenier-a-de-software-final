@@ -28,6 +28,7 @@ import { DetalleSocio } from "./pages/DetalleSocio.jsx";
 import { DetalleProgramacion } from "./pages/DetalleProgramacion.jsx";
 import { DetalleInventario } from "./pages/DetalleInventario.jsx";
 import { EditarSocio } from "./pages/EditarSocio.jsx";
+import { Perfil } from "./pages/Perfil.jsx";
 import { EditarInventario } from "./pages/EditarInventario.jsx";
 import { EditarProgramacion } from "./pages/EditarProgramacion.jsx";
 import { CrearTipoEvento } from "./pages/Crear_Tipo_Evento.jsx";
@@ -71,6 +72,7 @@ const Layout = () => {
                         <Route element={<ListadoProgramacion />} path="/listadoprogramacion" />
                         <Route element={<CrearInventario />} path="/crearinventario" />
                         <Route element={<CrearProgramacion />} path="/crearprogramacion" />
+                        <Route element={<Perfil />} path="/perfil" />
                         <Route element={<RegisterAdmin />} path="/register_administrador" />
                         <Route element={<EditAdmin />} path="/editar_administrador" />
                         <Route element={<RegisterMonitor />} path="/register_monitor" />

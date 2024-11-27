@@ -43,8 +43,9 @@ export const Login = () => {
         const socio = sociosData.results.find((socio) => socio.email === email);
 
         if (socio) {
-          // Guardar el UserId en localStorage
+          // Guardar el UserId y el valor de isAdmin en localStorage
           localStorage.setItem('UserId', socio.id);
+          localStorage.setItem('isAdmin', socio.admin);  // Almacenar el valor del campo 'admin'
 
           navigate("/programacion");
 

@@ -1,4 +1,3 @@
-
 const getState = ({
     getStore,
     getActions,
@@ -21,7 +20,6 @@ const getState = ({
             token: null,
             user: [],
             participante: [],
-            isAdmin: false, // crear logica
             monitores: [],
             tipo_evento: [],
             evento: [],
@@ -74,7 +72,7 @@ const getState = ({
                     })
                 };
                 try {
-                    const resp = await fetch(`https://3000-jphafelin-ingsoftwareof-je87mcfudu9.ws-us116.gitpod.io/api/login`, requestOptions)
+                    const resp = await fetch(`${BACKEND_URL}/api/login`, requestOptions)
 
                     if (resp.status != 200) {
                         console.log("An error has occurred");
