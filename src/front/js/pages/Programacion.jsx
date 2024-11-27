@@ -18,14 +18,6 @@ export const Programacion = () => {
                 }
                 const data = await response.json();
                 setProgramaciones(data.results);
-
-                data.results.forEach((result) => {
-                    console.log("LO LEÍ:", result);
-                    if (result.fecha) {
-                        console.log("Fecha:", result.fecha);
-                    }
-                });
-
             } catch (error) {
                 console.error("Error al obtener las programaciones:", error);
             }
@@ -39,7 +31,6 @@ export const Programacion = () => {
                 }
                 const data = await response.json();
                 setSocio(data); // Guardar los datos del socio
-
             } catch (error) {
                 console.error("Error al obtener los datos del socio:", error);
             }
@@ -175,10 +166,19 @@ export const Programacion = () => {
                                     <strong>Lugar:</strong> {programacion.lugar}
                                 </p>
                                 <button
-                                    className="btn btn-primary"
-                                    onClick={() => manejarInscripcion(programacion.id, estaInscripto)}
+                                    className={`btn ${
+                                        programacion.realizado ? "btn-secondary" : "btn-primary"
+                                    }`}
+                                    onClick={() =>
+                                        !programacion.realizado && manejarInscripcion(programacion.id, estaInscripto)
+                                    }
+                                    disabled={programacion.realizado}
                                 >
-                                    {estaInscripto ? "Desinscribir" : "Inscribirse"}
+                                    {programacion.realizado
+                                        ? "Realizado"
+                                        : estaInscripto
+                                        ? "Desinscribir"
+                                        : "Inscribirse"}
                                 </button>
                             </div>
                         </div>
@@ -241,6 +241,7 @@ export const Programacion = () => {
         </div>
     );
 };
+
 
 
 
