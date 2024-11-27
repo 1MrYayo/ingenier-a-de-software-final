@@ -104,7 +104,7 @@ const getState = ({
                 });
             },
             logout: () => {
-                const token = localStorage.removeItem("token");
+                const token = localStorage.clear();
                 setStore({
                     token: null
                 });
