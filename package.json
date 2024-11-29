@@ -73,6 +73,7 @@
 		]
 	},
 	"dependencies": {
+		"@paypal/react-paypal-js": "^8.7.0",
 		"formik": "^2.2.9",
 		"papaparse": "^5.4.1",
 		"prop-types": "^15.6.1",
@@ -80,6 +81,7 @@
 		"react-dom": "^16.8.4",
 		"react-polyfills": "0.0.1",
 		"react-router-dom": "^6.3.0",
+		"transbank-sdk": "^5.0.0",
 		"xlsx": "^0.18.5",
 		"yup": "^1.0.2"
 	}

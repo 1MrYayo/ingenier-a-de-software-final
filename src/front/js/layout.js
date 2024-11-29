@@ -34,6 +34,8 @@ import { EditarProgramacion } from "./pages/EditarProgramacion.jsx";
 import { CrearTipoEvento } from "./pages/Crear_Tipo_Evento.jsx";
 import { EditarTipoEvento } from "./pages/Editar_Tipo_Evento.jsx";
 import injectContext from "./store/appContext";
+import { SimulacionPago } from "./pages/SimulacionPago.jsx";
+import { App } from "./pages/App.jsx";
 
 import { Navbar } from "./component/navbar.jsx";
 import { Footer } from "./component/Footer.jsx";
@@ -85,7 +87,10 @@ const Layout = () => {
                         <Route element={<CrearTipoEvento />} path="/crear_tipo_evento" />
                         <Route element={<EditarTipoEvento />} path="/editar_tipo_evento" />
                         <Route element={<Single />} path="/single/:theid" />
+                        <Route element={<SimulacionPago />} path="/SimulacionPago" />
+                        <Route element={<App />} path="/App" />
                         <Route element={<h1>Not found!</h1>} />
+                        
                     </Routes>
                     
                 </ScrollToTop>
